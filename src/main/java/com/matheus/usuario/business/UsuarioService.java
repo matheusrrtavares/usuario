@@ -4,6 +4,7 @@ import com.matheus.usuario.business.converter.UsuarioConverter;
 import com.matheus.usuario.business.dto.UsuarioDTO;
 import com.matheus.usuario.infrastructure.entity.Usuario;
 import com.matheus.usuario.infrastructure.exceptions.ConflictException;
+import com.matheus.usuario.infrastructure.exceptions.ResourceNotFoundException;
 import com.matheus.usuario.infrastructure.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,8 +19,14 @@ public class UsuarioService {
     private final UsuarioConverter usuarioConverter;
 
     public UsuarioDTO salvaUsuario(UsuarioDTO usuarioDTO) {
-        Usuario usuario = usuarioConverter.paraUsuario(usuarioDTO);
-        return usuarioConverter.paraUsuarioDTO(usuarioRepository.save(usuario));
+        try{
+            emailExiste(usuarioDTO.getEmail());
+            Usuario usuario = usuarioConverter.paraUsuario(usuarioDTO);
+            usuario.setSenha(encoder.encode(usuario.getSenha()));
+            return usuarioConverter.paraUsuarioDTO(usuarioRepository.save(usuario));
+        }catch (ConflictException e){
+            throw new ConflictException("Email já cadastrado " + e.getCause());
+        }
     }
 
     public void emailExiste(String email) {
@@ -39,12 +46,13 @@ public class UsuarioService {
 
     public Usuario buscaUsuarioPorEmail(String email) {
         return usuarioRepository.findByEmail(email).orElseThrow(
-                () -> new ConflictException("Usuário não localizado " + email)
+                () -> new ResourceNotFoundException("Email não localizado " + email)
         );
     }
 
     public void deletaUsuarioPorEmail(String email) {
-         usuarioRepository.deletaUsuarioPorEmail(email);
+         usuarioRepository.deleteByEmail(email);
     }
+
 
 }
