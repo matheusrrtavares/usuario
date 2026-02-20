@@ -1,10 +1,7 @@
 package com.matheus.usuario.infrastructure.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -12,6 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "endereco")
+@Builder
 public class Endereco {
 
     @Id
@@ -20,7 +18,7 @@ public class Endereco {
     @Column(name = "rua")
     private String rua;
     @Column(name = "numero")
-    private Long numero;
+    private String numero;
     @Column(name = "Complemento")
     private String complemento;
     @Column(name = "cidade", length = 150)
