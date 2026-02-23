@@ -17,6 +17,8 @@ public class Telefone {
     private Long id;
     @Column(name = "ddd", length = 3)
     private String ddd;
-    @Column(name = "numero", length = 10)
+    @Column(name = "numero", length = 10, nullable = false)
     private String numero;
+    @Column(name = "usuario_id", nullable = false)
+    private Long usuario_id;
 }
