@@ -102,7 +102,7 @@ public class UsuarioConverter {
                 .build();
     }
 
-    public Endereco atualizaEndereco (EnderecoDTO enderecoDTO, Endereco enderecoEntity) {
+    public Endereco atualizaEndereco(EnderecoDTO enderecoDTO, Endereco enderecoEntity) {
         return Endereco.builder()
                 .id(enderecoEntity.getId())
                 .rua(enderecoDTO.getRua() != null ? enderecoDTO.getRua() : enderecoEntity.getRua())
@@ -114,7 +114,7 @@ public class UsuarioConverter {
                 .build();
     }
 
-    public Telefone atualizaTelefone (TelefoneDTO telefoneDTO, Telefone telefoneEntity) {
+    public Telefone atualizaTelefone(TelefoneDTO telefoneDTO, Telefone telefoneEntity) {
         return Telefone.builder()
                 .id(telefoneEntity.getId())
                 .ddd(telefoneDTO.getDdd() != null ? telefoneDTO.getDdd() : telefoneEntity.getDdd())
