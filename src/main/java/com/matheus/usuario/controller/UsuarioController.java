@@ -26,22 +26,29 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody UsuarioDTO usuarioDTO) {
+    public String login(@RequestBody UsuarioDTO usuarioDTO){
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(usuarioDTO.getEmail(), usuarioDTO.getSenha())
         );
-        return "Bearer " + jwtUtil.generateToken(usuarioDTO.getEmail()       );
+        return "Bearer " +  jwtUtil.generateToken(usuarioDTO.getEmail());
     }
 
     @GetMapping
-    public ResponseEntity<Usuario> buscaUsuario(@RequestParam("email") String email) {
+    public ResponseEntity<Usuario> buscaUsuario(@RequestParam ("email") String email) {
         return ResponseEntity.ok(usuarioService.buscaUsuarioPorEmail(email));
     }
 
-    @DeleteMapping("/{email}")
-    public ResponseEntity<Void> deletaUsuarioPorEmail(@PathVariable String email) {
-        usuarioService.deletaUsuarioPorEmail(email);
-        return ResponseEntity.ok().build();
+    @DeleteMapping
+    public ResponseEntity<Void> deletaUsuario(@PathVariable String email) {
+         usuarioService.deletaUsuarioPorEmail(email);
+         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping
+    public ResponseEntity<UsuarioDTO> atualizaDadosUsuario(@RequestBody UsuarioDTO usuarioDTO,
+                                                           @RequestHeader("Authorization") String token){
+
+        return ResponseEntity.ok(usuarioService.atualizaDadosUsuario(token, usuarioDTO));
     }
 
 }

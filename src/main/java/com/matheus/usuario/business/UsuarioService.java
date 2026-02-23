@@ -6,6 +6,7 @@ import com.matheus.usuario.infrastructure.entity.Usuario;
 import com.matheus.usuario.infrastructure.exceptions.ConflictException;
 import com.matheus.usuario.infrastructure.exceptions.ResourceNotFoundException;
 import com.matheus.usuario.infrastructure.repository.UsuarioRepository;
+import com.matheus.usuario.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder encoder;
     private final UsuarioConverter usuarioConverter;
+    private final JwtUtil jwtUtil;
 
     public UsuarioDTO salvaUsuario(UsuarioDTO usuarioDTO) {
         try{
@@ -54,5 +56,24 @@ public class UsuarioService {
          usuarioRepository.deleteByEmail(email);
     }
 
+
+    public UsuarioDTO atualizaDadosUsuario(String token, UsuarioDTO usuarioDTO) {
+        //Busca email do usuário pelo token (tirar obrigatoriedade de passar o email)
+        String email = jwtUtil.extractUsername(token.substring(7));
+
+        //criptografia de senha
+        usuarioDTO.setSenha(usuarioDTO.getSenha() != null ?
+                encoder.encode(usuarioDTO.getSenha()) : null);
+
+        //Busca dados do usuário no banco de dados
+        Usuario usuarioEntity = usuarioRepository.findByEmail(email).orElseThrow(
+                () -> new ResourceNotFoundException("Usuário não localizado"));
+
+        //Mesclou os dados que recebemos na requisição DTo com os dados do banco de dados
+        Usuario usuario = usuarioConverter.updateUsuario(usuarioDTO, usuarioEntity);
+
+        //salva dados do usuário convertido e depois pega o retorno e converte para DTO
+        return usuarioConverter.paraUsuarioDTO(usuarioRepository.save(usuario));
+    }
 
 }
