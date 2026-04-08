@@ -6,6 +6,7 @@ import com.matheus.usuario.infrastructure.entity.UsuarioEntity;
 import com.matheus.usuario.infrastructure.exceptions.ConflictException;
 import com.matheus.usuario.infrastructure.exceptions.ResourceNotFoundException;
 import com.matheus.usuario.infrastructure.repository.UsuarioRepository;
+import com.matheus.usuario.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +19,7 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final UsuarioConverter converter;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
 
     public UsuarioDTO salvaUsuario(UsuarioDTO usuarioDTO) {
@@ -48,6 +50,19 @@ public class UsuarioService {
 
     public void deletaUsuarioPorEmail(String email) {
         usuarioRepository.deleteByEmail(email);
+    }
+
+    public UsuarioDTO atualizaDadosUsuario(String token, UsuarioDTO dto) {
+        String email = jwtUtil.extractUsername(token.substring(7));
+
+        dto.setSenha(dto.getSenha() != null ? passwordEncoder.encode(dto.getSenha()) : null);
+
+        UsuarioEntity entity = usuarioRepository.findByEmail(email).orElseThrow(
+                () -> new ResourceNotFoundException("Email não encontrado " + email));
+
+        entity = converter.updateUsuario(entity, dto);
+
+        return converter.paraUsuarioDTO(usuarioRepository.save(entity));
     }
 
 

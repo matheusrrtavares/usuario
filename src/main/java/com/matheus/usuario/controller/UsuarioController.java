@@ -44,10 +44,15 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{email}")
-    public ResponseEntity<Void> deletaUsuarioPorEmail(@PathVariable("email") String email) {
+    public ResponseEntity<Void> deletaUsuarioPorEmail(@PathVariable String email) {
         service.deletaUsuarioPorEmail(email);
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping
+    public ResponseEntity<UsuarioDTO> atualizaDadosUsuario(@RequestBody UsuarioDTO dto,
+                                                           @RequestHeader ("Authorization") String token) {
+        return ResponseEntity.ok(service.atualizaDadosUsuario(token, dto));
+    }
 
 }
