@@ -1,6 +1,8 @@
 package com.matheus.usuario.controller;
 
 import com.matheus.usuario.business.UsuarioService;
+import com.matheus.usuario.business.dto.EnderecoDTO;
+import com.matheus.usuario.business.dto.TelefoneDTO;
 import com.matheus.usuario.business.dto.UsuarioDTO;
 import com.matheus.usuario.infrastructure.entity.UsuarioEntity;
 import com.matheus.usuario.infrastructure.repository.UsuarioRepository;
@@ -44,10 +46,27 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{email}")
-    public ResponseEntity<Void> deletaUsuarioPorEmail(@PathVariable("email") String email) {
+    public ResponseEntity<Void> deletaUsuarioPorEmail(@PathVariable String email) {
         service.deletaUsuarioPorEmail(email);
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping
+    public ResponseEntity<UsuarioDTO> atualizaDadosUsuario(@RequestBody UsuarioDTO dto,
+                                                           @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(service.atualizaDadosUsuario(token, dto));
+    }
+
+    @PutMapping("/endereco")
+    public ResponseEntity<EnderecoDTO> atualizaEndereco(@RequestBody EnderecoDTO enderecoDTO,
+                                                        @RequestParam("id") Long id) {
+        return ResponseEntity.ok(service.atualizaEndereco(id, enderecoDTO));
+    }
+
+    @PutMapping("/telefone")
+    public ResponseEntity<TelefoneDTO> atualizaTelefone(@RequestBody TelefoneDTO telefoneDTO,
+                                                        @RequestParam("id") Long id) {
+        return ResponseEntity.ok(service.atualizaTelefone(id, telefoneDTO));
+    }
 
 }
