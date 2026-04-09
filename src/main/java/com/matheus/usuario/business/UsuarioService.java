@@ -1,10 +1,16 @@
 package com.matheus.usuario.business;
 
 import com.matheus.usuario.business.converter.UsuarioConverter;
+import com.matheus.usuario.business.dto.EnderecoDTO;
+import com.matheus.usuario.business.dto.TelefoneDTO;
 import com.matheus.usuario.business.dto.UsuarioDTO;
+import com.matheus.usuario.infrastructure.entity.EnderecoEntity;
+import com.matheus.usuario.infrastructure.entity.TelefoneEntity;
 import com.matheus.usuario.infrastructure.entity.UsuarioEntity;
 import com.matheus.usuario.infrastructure.exceptions.ConflictException;
 import com.matheus.usuario.infrastructure.exceptions.ResourceNotFoundException;
+import com.matheus.usuario.infrastructure.repository.EnderecoRepository;
+import com.matheus.usuario.infrastructure.repository.TelefoneRepository;
 import com.matheus.usuario.infrastructure.repository.UsuarioRepository;
 import com.matheus.usuario.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +23,8 @@ import org.springframework.stereotype.Service;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final EnderecoRepository enderecoRepository;
+    private final TelefoneRepository telefoneRepository;
     private final UsuarioConverter converter;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
@@ -64,6 +72,30 @@ public class UsuarioService {
 
         return converter.paraUsuarioDTO(usuarioRepository.save(entity));
     }
+
+    public EnderecoDTO atualizaEndereco(Long enderecoId, EnderecoDTO enderecoDTO) {
+
+        EnderecoEntity entity = enderecoRepository.findById(enderecoId)
+                .orElseThrow( () -> new ResourceNotFoundException("Id não encontrado " + enderecoId));
+
+        EnderecoEntity endereco = converter.updateEndereco(entity, enderecoDTO);
+
+        return converter.paraEnderecoDTO(enderecoRepository.save(endereco));
+
+    }
+
+    public TelefoneDTO atualizaTelefone(Long telefoneId, TelefoneDTO telefoneDTO) {
+
+        TelefoneEntity entity = telefoneRepository.findById(telefoneId)
+                .orElseThrow( () -> new ResourceNotFoundException("Id não encontrado " + telefoneId));
+
+        TelefoneEntity telefone = converter.updateTelefone(entity, telefoneDTO);
+
+        return converter.paraTelefoneDTO(telefoneRepository.save(telefone));
+
+    }
+
+
 
 
 }
