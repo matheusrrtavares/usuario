@@ -14,7 +14,6 @@ import com.matheus.usuario.infrastructure.repository.TelefoneRepository;
 import com.matheus.usuario.infrastructure.repository.UsuarioRepository;
 import com.matheus.usuario.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -76,7 +75,7 @@ public class UsuarioService {
     public EnderecoDTO atualizaEndereco(Long enderecoId, EnderecoDTO enderecoDTO) {
 
         EnderecoEntity entity = enderecoRepository.findById(enderecoId)
-                .orElseThrow( () -> new ResourceNotFoundException("Id não encontrado " + enderecoId));
+                .orElseThrow(() -> new ResourceNotFoundException("Id não encontrado " + enderecoId));
 
         EnderecoEntity endereco = converter.updateEndereco(entity, enderecoDTO);
 
@@ -87,7 +86,7 @@ public class UsuarioService {
     public TelefoneDTO atualizaTelefone(Long telefoneId, TelefoneDTO telefoneDTO) {
 
         TelefoneEntity entity = telefoneRepository.findById(telefoneId)
-                .orElseThrow( () -> new ResourceNotFoundException("Id não encontrado " + telefoneId));
+                .orElseThrow(() -> new ResourceNotFoundException("Id não encontrado " + telefoneId));
 
         TelefoneEntity telefone = converter.updateTelefone(entity, telefoneDTO);
 
@@ -95,7 +94,27 @@ public class UsuarioService {
 
     }
 
+    public EnderecoDTO cadastraEndereco(String token, EnderecoDTO dto) {
 
+        String email = jwtUtil.extractUsername(token.substring(7));
+        UsuarioEntity usuario = usuarioRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("Email não encontrado " + email));
+
+        return converter.paraEnderecoDTO(
+                enderecoRepository.save(
+                        converter.paraNovoEnderecoEntity(dto, usuario.getId())));
+
+    }
+
+    public TelefoneDTO cadastraTelefone(String token, TelefoneDTO dto) {
+        String email = jwtUtil.extractUsername(token.substring(7));
+        UsuarioEntity usuario = usuarioRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("Email não encontrado"));
+
+        return converter.paraTelefoneDTO(
+                telefoneRepository.save(
+                        converter.paraNovoTelefoneEntity(dto, usuario.getId())));
+    }
 
 
 }

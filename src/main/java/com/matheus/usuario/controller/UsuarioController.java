@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.*;
 public class UsuarioController {
 
     private final UsuarioService service;
-    public final AuthenticationManager authenticationManager;
-    public final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
     private final UsuarioRepository usuarioRepository;
 
 
@@ -67,6 +67,18 @@ public class UsuarioController {
     public ResponseEntity<TelefoneDTO> atualizaTelefone(@RequestBody TelefoneDTO telefoneDTO,
                                                         @RequestParam("id") Long id) {
         return ResponseEntity.ok(service.atualizaTelefone(id, telefoneDTO));
+    }
+
+    @PostMapping("/endereco")
+    public ResponseEntity<EnderecoDTO> cadastraEnderecoUsuario(@RequestBody EnderecoDTO enderecoDTO,
+                                               @RequestHeader("Authorization") String token){
+        return ResponseEntity.ok(service.cadastraEndereco(token, enderecoDTO));
+    }
+
+    @PostMapping("/telefone")
+    public ResponseEntity<TelefoneDTO> cadastraTelefone(@RequestBody TelefoneDTO telefoneDTO,
+                                                        @RequestHeader("Authorization") String token){
+        return ResponseEntity.ok(service.cadastraTelefone(token, telefoneDTO));
     }
 
 }
