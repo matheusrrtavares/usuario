@@ -49,10 +49,10 @@ public class UsuarioService {
         return usuarioRepository.existsByEmail(email);
     }
 
-    public UsuarioEntity buscaUsuarioPorEmail(String email) {
-        return usuarioRepository.findByEmail(email).orElseThrow(
-                () -> new ResourceNotFoundException("Email não encontrado " + email)
-        );
+    public UsuarioDTO buscaUsuarioPorEmail(String email) {
+        return usuarioRepository.findByEmail(email)
+                .map(converter::paraUsuarioDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Email não encontrado " + email));
     }
 
     public void deletaUsuarioPorEmail(String email) {
@@ -71,6 +71,7 @@ public class UsuarioService {
 
         return converter.paraUsuarioDTO(usuarioRepository.save(entity));
     }
+
 
     public EnderecoDTO atualizaEndereco(Long enderecoId, EnderecoDTO enderecoDTO) {
 
