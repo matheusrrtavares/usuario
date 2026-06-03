@@ -7,6 +7,9 @@ import com.matheus.usuario.business.dto.UsuarioDTO;
 import com.matheus.usuario.infrastructure.entity.UsuarioEntity;
 import com.matheus.usuario.infrastructure.repository.UsuarioRepository;
 import com.matheus.usuario.infrastructure.security.JwtUtil;
+import com.matheus.usuario.infrastructure.security.SecurityConfig;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.apache.tomcat.util.http.parser.Authorization;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/usuario")
 @RequiredArgsConstructor
+@Tag(name = "Usuario", description = "Cadastra usuários")
 public class UsuarioController {
 
     private final UsuarioService service;
@@ -41,7 +45,7 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<UsuarioEntity> buscaUsuarioPorEmail(@RequestParam("email") String email) {
+    public ResponseEntity<UsuarioDTO> buscaUsuarioPorEmail(@RequestParam("email") String email) {
         return ResponseEntity.ok(service.buscaUsuarioPorEmail(email));
     }
 
