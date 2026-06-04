@@ -1,6 +1,7 @@
 package com.matheus.usuario.controller;
 
 import com.matheus.usuario.infrastructure.exceptions.ConflictException;
+import com.matheus.usuario.infrastructure.exceptions.IllegalArgumentException;
 import com.matheus.usuario.infrastructure.exceptions.ResourceNotFoundException;
 import com.matheus.usuario.infrastructure.exceptions.UnauthorizedException;
 import org.apache.coyote.Response;
@@ -25,5 +26,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<String> handlerUnauthorizedException(UnauthorizedException exception){
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handlerIllegalArgumentException(IllegalArgumentException exception){
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
