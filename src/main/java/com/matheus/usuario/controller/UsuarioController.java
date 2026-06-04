@@ -1,9 +1,11 @@
 package com.matheus.usuario.controller;
 
 import com.matheus.usuario.business.UsuarioService;
+import com.matheus.usuario.business.ViaCepService;
 import com.matheus.usuario.business.dto.EnderecoDTO;
 import com.matheus.usuario.business.dto.TelefoneDTO;
 import com.matheus.usuario.business.dto.UsuarioDTO;
+import com.matheus.usuario.infrastructure.clients.ViaCepDTO;
 import com.matheus.usuario.infrastructure.entity.UsuarioEntity;
 import com.matheus.usuario.infrastructure.repository.UsuarioRepository;
 import com.matheus.usuario.infrastructure.security.JwtUtil;
@@ -29,6 +31,7 @@ public class UsuarioController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final UsuarioRepository usuarioRepository;
+    private final ViaCepService viaCepService;
 
 
     @PostMapping
@@ -84,5 +87,11 @@ public class UsuarioController {
                                                         @RequestHeader("Authorization") String token){
         return ResponseEntity.ok(service.cadastraTelefone(token, telefoneDTO));
     }
+
+    @GetMapping("/endereco/{cep}")
+    public ResponseEntity<ViaCepDTO> buscaDadosCep(@PathVariable String cep){
+        return ResponseEntity.ok(viaCepService.buscaDadosEndereco(cep));
+    }
+
 
 }
